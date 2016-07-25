@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.usfreu2016.deadreckoningmodule.deadreckoning.DeadReckoningManager;
@@ -42,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
     Timer timer;
     TimerTask task;
 
+    /** Number of steps */
+    int numSteps;
+
     /** position to be recorded */
     double xHat;
     double yHat;
@@ -58,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     Button startButton;
     Button setOrientationButton;
     Button recordTimeButton;
+    TextView numStepsTextView;
 
     /** Directory name and file name */
     String dirName = "DR Data";
@@ -75,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         timer = new Timer();
 
         recordingData = false;
+        numSteps = 0;
     }
 
     @Override
@@ -141,6 +147,8 @@ public class MainActivity extends AppCompatActivity {
         startButton = (Button) findViewById(R.id.startButton);
         setOrientationButton = (Button) findViewById(R.id.setOrientationButton);
         recordTimeButton = (Button) findViewById(R.id.recordTimeButton);
+        numStepsTextView = (TextView) findViewById(R.id.numStepsTextView);
+        numStepsTextView.setText(String.valueOf(numSteps));
 
         /** Set button listeners */
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -190,6 +198,8 @@ public class MainActivity extends AppCompatActivity {
         mDeadReckoningManager.setStepListener(new DeadReckoningManager.StepListener() {
             @Override
             public void onStep(Step step) {
+                numSteps++;
+                numStepsTextView.setText(String.valueOf(numSteps));
                 if (recordingData) {
                     Log.d(TAG, "onstep");
                     xHat = xHat + step.getStepLength() * ((int) Math.sin(radBearing));
